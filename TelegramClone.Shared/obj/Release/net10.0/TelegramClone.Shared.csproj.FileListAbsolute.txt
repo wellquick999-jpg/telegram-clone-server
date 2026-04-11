@@ -1,0 +1,11 @@
+C:\Projects\TelegramClone\TelegramClone.Shared\bin\Release\net10.0\TelegramClone.Shared.deps.json
+C:\Projects\TelegramClone\TelegramClone.Shared\bin\Release\net10.0\TelegramClone.Shared.dll
+C:\Projects\TelegramClone\TelegramClone.Shared\bin\Release\net10.0\TelegramClone.Shared.pdb
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.AssemblyInfoInputs.cache
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.AssemblyInfo.cs
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.csproj.CoreCompileInputs.cache
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.dll
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\refint\TelegramClone.Shared.dll
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\TelegramClone.Shared.pdb
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Release\net10.0\ref\TelegramClone.Shared.dll

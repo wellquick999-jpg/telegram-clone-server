@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.SearchUsersPage"
+             Title="Поиск пользователей">
+    
+    <VerticalStackLayout Spacing="10" Padding="10">
+        
+        <!-- Поисковая строка -->
+        <Entry x:Name="SearchEntry"
+               Placeholder="Введите номер телефона или имя"
+               ReturnType="Search"
+               Completed="OnSearchCompleted"/>
+        
+        <!-- Результаты поиска -->
+        <CollectionView x:Name="UsersCollection"
+                        SelectionMode="Single"
+                        SelectionChanged="OnUserSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" 
+                          ColumnDefinitions="Auto,*,Auto"
+                          BackgroundColor="White">
+                        
+                        <!-- Аватар -->
+                        <Frame Grid.Column="0" 
+                               WidthRequest="50" 
+                               HeightRequest="50"
+                               CornerRadius="25"
+                               BackgroundColor="#E0E0E0">
+                            <Label Text="{Binding Username[0]}" 
+                                   FontSize="24"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+                        
+                        <!-- Информация о пользователе -->
+                        <VerticalStackLayout Grid.Column="1" 
+                                             Margin="10,0">
+                            <Label Text="{Binding Username}" 
+                                   FontSize="16"
+                                   FontAttributes="Bold"/>
+                            <Label Text="{Binding PhoneNumber}" 
+                                   FontSize="12"
+                                   TextColor="Gray"/>
+                        </VerticalStackLayout>
+                        
+                        <!-- Кнопка выбора -->
+                        <Label Grid.Column="2" 
+                               Text="Выбрать"
+                               TextColor="#2A6B9F"
+                               VerticalOptions="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <Label x:Name="StatusLabel" 
+               Text=""
+               HorizontalOptions="Center"
+               TextColor="Red"/>
+    </VerticalStackLayout>
+</ContentPage>

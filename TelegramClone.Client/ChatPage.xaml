@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.ChatPage"
+             Title=""
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Информационная панель -->
+        <Grid Grid.Row="0" 
+              BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
+              Padding="10"
+              ColumnDefinitions="Auto,*,Auto">
+            
+            <Frame Grid.Column="0"
+                   WidthRequest="50"
+                   HeightRequest="50"
+                   CornerRadius="25"
+                   BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center">
+                <Label Text="{Binding ChatName[0]}"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+            </Frame>
+            
+            <VerticalStackLayout Grid.Column="1"
+                                 Spacing="3"
+                                 Margin="10,0">
+                <Label Text="{Binding ChatName}"
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                
+                <Label x:Name="StatusLabel"
+                       Text="{Binding StatusText}"
+                       FontSize="12"
+                       TextColor="{Binding StatusColor}"/>
+            </VerticalStackLayout>
+            
+            <Button Grid.Column="2"
+                    Text="⋮"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    FontSize="24"
+                    Clicked="OnMenuClicked"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center"/>
+        </Grid>
+        
+        <!-- Разделительная линия -->
+        <BoxView Grid.Row="1"
+                 HeightRequest="1"
+                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"/>
+        
+        <!-- Список сообщений -->
+        <CollectionView Grid.Row="2" 
+                        x:Name="MessagesCollection"
+                        ItemsSource="{Binding Messages}"
+                        VerticalScrollBarVisibility="Always"
+                        SelectionMode="Single"
+                        SelectionChanged="OnMessageSelected"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10">
+                        <Frame HorizontalOptions="{Binding HorizontalAlignment}"
+                               BackgroundColor="{Binding BackgroundColor}"
+                               CornerRadius="15"
+                               Padding="12,8">
+                            <StackLayout>
+                                <Label Text="{Binding Text}"
+                                       TextColor="{Binding TextColor}"
+                                       FontSize="14"/>
+                                <Grid>
+                                    <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm}'}"
+                                           TextColor="{Binding TimeColor}"
+                                           FontSize="10"
+                                           HorizontalOptions="End"/>
+                                    <Label Text="(ред.)"
+                                           TextColor="{Binding TimeColor}"
+                                           FontSize="10"
+                                           HorizontalOptions="Start"
+                                           IsVisible="{Binding IsEdited}"/>
+                                </Grid>
+                            </StackLayout>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <!-- Индикатор печатания -->
+        <Label Grid.Row="3" 
+               x:Name="TypingLabel"
+               Text=""
+               FontSize="10"
+               TextColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"
+               HorizontalOptions="Start"
+               Margin="10,0,0,5"
+               IsVisible="False"/>
+        
+        <!-- Панель отправки сообщения -->
+        <Grid Grid.Row="4" 
+              Padding="10"
+              ColumnDefinitions="*,Auto"
+              BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+            
+            <Entry x:Name="MessageEntry"
+                   Grid.Column="0"
+                   Placeholder="Введите сообщение..."
+                   ReturnType="Send"
+                   Completed="OnSendMessage"
+                   BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
+                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                   TextChanged="OnTextChanged"/>
+            
+            <Button Grid.Column="1"
+                    Text="➤"
+                    WidthRequest="50"
+                    BackgroundColor="#2A6B9F"
+                    TextColor="White"
+                    Clicked="OnSendMessage"
+                    CornerRadius="25"/>
+        </Grid>
+    </Grid>
+</ContentPage>

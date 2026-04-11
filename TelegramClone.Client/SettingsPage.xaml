@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.SettingsPage"
+             Title="Настройки">
+    
+    <ContentPage.Resources>
+        <!-- Светлая тема -->
+        <Style x:Key="LightTheme" TargetType="Grid">
+            <Setter Property="BackgroundColor" Value="White"/>
+        </Style>
+        <Style x:Key="LightText" TargetType="Label">
+            <Setter Property="TextColor" Value="Black"/>
+        </Style>
+        <Style x:Key="LightSecondaryText" TargetType="Label">
+            <Setter Property="TextColor" Value="Gray"/>
+        </Style>
+        
+        <!-- Темная тема -->
+        <Style x:Key="DarkTheme" TargetType="Grid">
+            <Setter Property="BackgroundColor" Value="#1a1a1a"/>
+        </Style>
+        <Style x:Key="DarkText" TargetType="Label">
+            <Setter Property="TextColor" Value="White"/>
+        </Style>
+        <Style x:Key="DarkSecondaryText" TargetType="Label">
+            <Setter Property="TextColor" Value="#8a8a8a"/>
+        </Style>
+        
+        <!-- Динамические стили -->
+        <Style TargetType="Grid">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=White, Dark=#1a1a1a}"/>
+        </Style>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=Black, Dark=White}"/>
+        </Style>
+        <Style x:Key="SecondaryLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
+        </Style>
+        <Style TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"/>
+        </Style>
+    </ContentPage.Resources>
+    
+    <ScrollView>
+        <VerticalStackLayout Spacing="0">
+            
+            <!-- Шапка профиля (синий фон) -->
+            <Grid BackgroundColor="#2A6B9F" Padding="20,30,20,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Frame Grid.Row="0" Grid.RowSpan="2" Grid.Column="0"
+                       WidthRequest="70" 
+                       HeightRequest="70"
+                       CornerRadius="35"
+                       BackgroundColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Label x:Name="AvatarLabel"
+                           Text="👤"
+                           FontSize="35"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+                
+                <Label Grid.Row="0" Grid.Column="1"
+                       x:Name="UsernameLabel"
+                       Text="Загрузка..."
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       Margin="15,0,0,0"
+                       VerticalOptions="End"/>
+                
+                <Label Grid.Row="1" Grid.Column="1"
+                       x:Name="PhoneLabel"
+                       Text=""
+                       FontSize="13"
+                       TextColor="White"
+                       Margin="15,0,0,0"
+                       Opacity="0.8"
+                       VerticalOptions="Center"/>
+            </Grid>
+            
+            <!-- Раздел: Настройки -->
+            <Label Text="Настройки"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <!-- Темная тема (переключатель) -->
+            <Grid Padding="20,12" ColumnDefinitions="*,Auto">
+                <Label Grid.Column="0" Text="🌙 Темная тема" 
+                       FontSize="16"
+                       VerticalOptions="Center"/>
+                <Switch Grid.Column="1" 
+                        x:Name="ThemeSwitch"
+                        IsToggled="{Binding IsDarkTheme}"
+                        Toggled="OnThemeToggled"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="20,0,0,0"/>
+            
+            <!-- Выход из аккаунта -->
+            <Grid Padding="20,12" ColumnDefinitions="*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLogoutClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="🚪 Выход из аккаунта" 
+                       FontSize="16"
+                       TextColor="#FF3B30"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="1" Text="›" 
+                       FontSize="18"
+                       Style="{StaticResource SecondaryLabel}"
+                       VerticalOptions="Center"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="20,0,0,0"/>
+            
+            <!-- Раздел: Аккаунт -->
+            <Label Text="Аккаунт"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <Grid Padding="20,12" ColumnDefinitions="Auto,*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAccountClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="👤" FontSize="18"/>
+                <Label Grid.Column="1" Text="Редактировать профиль" 
+                       FontSize="16"
+                       Margin="15,0,0,0"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="›" FontSize="18" Style="{StaticResource SecondaryLabel}"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="55,0,0,0"/>
+            
+            <!-- Раздел: Чаты -->
+            <Label Text="Чаты"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <Grid Padding="20,12" ColumnDefinitions="Auto,*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnChatSettingsClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="💬" FontSize="18"/>
+                <Label Grid.Column="1" Text="Настройки чатов" 
+                       FontSize="16"
+                       Margin="15,0,0,0"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="›" FontSize="18" Style="{StaticResource SecondaryLabel}"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="55,0,0,0"/>
+            
+            <!-- Раздел: Конфиденциальность -->
+            <Label Text="Конфиденциальность"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <Grid Padding="20,12" ColumnDefinitions="Auto,*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnPrivacyClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="🔒" FontSize="18"/>
+                <Label Grid.Column="1" Text="Конфиденциальность" 
+                       FontSize="16"
+                       Margin="15,0,0,0"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="›" FontSize="18" Style="{StaticResource SecondaryLabel}"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="55,0,0,0"/>
+            
+            <!-- Раздел: Уведомления -->
+            <Label Text="Уведомления"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <Grid Padding="20,12" ColumnDefinitions="Auto,*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNotificationsClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="🔔" FontSize="18"/>
+                <Label Grid.Column="1" Text="Уведомления" 
+                       FontSize="16"
+                       Margin="15,0,0,0"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="›" FontSize="18" Style="{StaticResource SecondaryLabel}"/>
+            </Grid>
+            <BoxView HeightRequest="0.5" Margin="55,0,0,0"/>
+            
+            <!-- Раздел: О приложении -->
+            <Label Text="О приложении"
+                   FontSize="14"
+                   Style="{StaticResource SecondaryLabel}"
+                   Margin="20,15,0,5"/>
+            
+            <Grid Padding="20,12" ColumnDefinitions="Auto,*,Auto">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAboutClicked"/>
+                </Grid.GestureRecognizers>
+                <Label Grid.Column="0" Text="ℹ️" FontSize="18"/>
+                <Label Grid.Column="1" Text="О приложении" 
+                       FontSize="16"
+                       Margin="15,0,0,0"
+                       VerticalOptions="Center"/>
+                <Label Grid.Column="2" Text="›" FontSize="18" Style="{StaticResource SecondaryLabel}"/>
+            </Grid>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

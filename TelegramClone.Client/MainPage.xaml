@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.MainPage"
+             Title="Telegram Clone">
+
+    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+        <Label Text="Telegram Clone"
+               FontSize="32"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+
+        <Label Text="Вход в аккаунт"
+               FontSize="18"
+               HorizontalOptions="Center"/>
+
+        <Entry x:Name="PhoneNumberEntry"
+               Placeholder="Номер телефона"
+               Keyboard="Telephone"/>
+
+        <Entry x:Name="PasswordEntry"
+               Placeholder="Пароль"
+               IsPassword="True"/>
+
+        <Button Text="Войти"
+                Clicked="OnLoginClicked"
+                BackgroundColor="#2A6B9F"
+                TextColor="White"/>
+
+        <Button Text="Регистрация"
+                Clicked="OnRegisterClicked"
+                BackgroundColor="#4CAF50"
+                TextColor="White"/>
+
+        <Label x:Name="StatusLabel"
+               Text=""
+               HorizontalOptions="Center"
+               TextColor="Red"/>
+
+    </VerticalStackLayout>
+</ContentPage>

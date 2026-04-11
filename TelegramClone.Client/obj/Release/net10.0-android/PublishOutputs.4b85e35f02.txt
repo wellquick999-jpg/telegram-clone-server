@@ -1,0 +1,4 @@
+C:\Projects\TelegramClone\TelegramClone.Client\bin\Release\net10.0-android\publish\com.yourname.mymessenger-Signed.aab
+C:\Projects\TelegramClone\TelegramClone.Client\bin\Release\net10.0-android\publish\com.yourname.mymessenger.aab
+C:\Projects\TelegramClone\TelegramClone.Client\bin\Release\net10.0-android\publish\com.yourname.mymessenger-Signed.apk
+C:\Projects\TelegramClone\TelegramClone.Client\bin\Release\net10.0-android\publish\_Microsoft.Android.Resource.Designer.dll

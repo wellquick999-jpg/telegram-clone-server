@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.ChatsPage"
+             Title="Чаты"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Кнопки -->
+        <Grid Grid.Row="0" 
+              ColumnDefinitions="*,Auto,Auto"
+              Margin="10">
+            
+            <Button Grid.Column="0"
+                    Text="+ Новый чат"
+                    Clicked="OnNewChatClicked"
+                    BackgroundColor="#2A6B9F"
+                    TextColor="White"/>
+            
+            <Button Grid.Column="1"
+                    Text="⚙️"
+                    Clicked="OnSettingsClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    FontSize="20"
+                    WidthRequest="50"/>
+            
+            <Button Grid.Column="2"
+                    Text="🚪"
+                    Clicked="OnLogoutClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    FontSize="20"
+                    WidthRequest="50"/>
+        </Grid>
+        
+        <!-- Список чатов -->
+        <CollectionView Grid.Row="1" 
+                        x:Name="ChatsCollection"
+                        SelectionMode="Single"
+                        SelectionChanged="OnChatSelected"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" 
+                          ColumnDefinitions="Auto,*,Auto"
+                          BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+                        
+                        <!-- Аватар -->
+                        <Frame Grid.Column="0" 
+                               WidthRequest="50" 
+                               HeightRequest="50"
+                               CornerRadius="25"
+                               BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
+                            <Label Text="{Binding Name[0]}" 
+                                   FontSize="24"
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                        </Frame>
+                        
+                        <!-- Информация о чате -->
+                        <VerticalStackLayout Grid.Column="1" 
+                                             Spacing="5"
+                                             Margin="10,0">
+                            <Label Text="{Binding Name}" 
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                            <Label Text="{Binding LastMessageText}" 
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"
+                                   MaxLines="1"
+                                   LineBreakMode="TailTruncation"/>
+                        </VerticalStackLayout>
+                        
+                        <!-- Время и счетчик -->
+                        <StackLayout Grid.Column="2" 
+                                     Spacing="5"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center">
+                            <Label Text="{Binding LastMessageTime}"
+                                   FontSize="10"
+                                   TextColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"
+                                   HorizontalOptions="Center"/>
+                            
+                            <Border IsVisible="{Binding HasUnreadMessages}"
+                                    BackgroundColor="#2A6B9F"
+                                    StrokeThickness="0"
+                                    Padding="8,2"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Label Text="{Binding UnreadCount}"
+                                       TextColor="White"
+                                       FontSize="10"
+                                       FontAttributes="Bold"/>
+                            </Border>
+                        </StackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
