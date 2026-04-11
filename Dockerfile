@@ -6,7 +6,9 @@ COPY TelegramClone.Shared/ TelegramClone.Shared/
 COPY TelegramClone.Server/ TelegramClone.Server/
 COPY TelegramClone.sln .
 
+# Восстанавливаем и собираем сервер
 RUN dotnet restore TelegramClone.Server/TelegramClone.Server.csproj
+RUN dotnet build TelegramClone.Server/TelegramClone.Server.csproj -c Release
 RUN dotnet publish TelegramClone.Server/TelegramClone.Server.csproj -c Release -o /app/publish
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0
