@@ -2,8 +2,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 COPY TelegramClone.Shared/ TelegramClone.Shared/
 COPY TelegramClone.Server/ TelegramClone.Server/
-COPY TelegramClone.sln .
-
+COPY TelegramClone.slnx .
 RUN dotnet restore TelegramClone.Server/TelegramClone.Server.csproj
 RUN dotnet publish TelegramClone.Server/TelegramClone.Server.csproj -c Release -o /app/publish
 
