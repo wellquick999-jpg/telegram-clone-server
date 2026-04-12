@@ -6,8 +6,7 @@ using TelegramClone.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// НЕ НАСТРАИВАЕМ ПОРТ ВРУЧНУЮ — Render сам задаст через PORT
-
+// Никаких ListenAnyIP, никаких UseUrls — полагаемся на окружение Render
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -53,7 +52,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/", () => "Server is alive!");
+// Простейший тестовый маршрут
 app.MapGet("/ping", () => "pong");
 
 using (var scope = app.Services.CreateScope())
