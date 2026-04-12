@@ -12,51 +12,32 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Chat> Chats { get; set; }
-    public DbSet<ChatParticipant> ChatParticipants { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique();
-            
-        modelBuilder.Entity<User>()
-            .HasIndex(u => u.PhoneNumber)
-            .IsUnique();
+        // User configuration
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(u => u.Id);
+            entity.HasIndex(u => u.Username).IsUnique();
+            entity.HasIndex(u => u.PhoneNumber).IsUnique();
+        });
         
-        // Message configuration - НЕТ UNIQUE!
-        modelBuilder.Entity<Message>()
-            .HasKey(m => m.Id);
+        // Message configuration - ВАЖНО: НЕТ уникальности на ChatId!
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(m => m.Id);
+            entity.HasIndex(m => m.ChatId);  // Только индекс, НЕ уникальный!
+            entity.HasIndex(m => m.SenderId);
+        });
         
-        modelBuilder.Entity<Message>()
-            .HasIndex(m => m.ChatId);  // Только индекс
-        
-        modelBuilder.Entity<Message>()
-            .HasIndex(m => m.SenderId);
-        
-        modelBuilder.Entity<Chat>()
-            .HasKey(c => c.Id);
-        
-        modelBuilder.Entity<Chat>()
-            .HasIndex(c => c.UpdatedAt);
-        
-        modelBuilder.Entity<ChatParticipant>()
-            .HasKey(cp => cp.Id);
-        
-        modelBuilder.Entity<ChatParticipant>()
-            .HasIndex(cp => new { cp.ChatId, cp.UserId })
-            .IsUnique();
-        
-        modelBuilder.Entity<ChatParticipant>()
-            .HasOne(cp => cp.Chat)
-            .WithMany(c => c.Participants)
-            .HasForeignKey(cp => cp.ChatId);
-        
-        modelBuilder.Entity<ChatParticipant>()
-            .HasOne(cp => cp.User)
-            .WithMany()
-            .HasForeignKey(cp => cp.UserId);
+        // Chat configuration
+        modelBuilder.Entity<Chat>(entity =>
+        {
+            entity.HasKey(c => c.Id);
+            entity.HasIndex(c => c.UpdatedAt);
+        });
     }
 }
