@@ -9,3 +9,4 @@ C:\Projects\TelegramClone\TelegramClone.Shared\obj\Debug\net10.0\TelegramClone.S
 C:\Projects\TelegramClone\TelegramClone.Shared\obj\Debug\net10.0\refint\TelegramClone.Shared.dll
 C:\Projects\TelegramClone\TelegramClone.Shared\obj\Debug\net10.0\TelegramClone.Shared.pdb
 C:\Projects\TelegramClone\TelegramClone.Shared\obj\Debug\net10.0\ref\TelegramClone.Shared.dll
+C:\Projects\TelegramClone\TelegramClone.Shared\obj\Debug\net10.0\TelegramClone.Shared.sourcelink.json

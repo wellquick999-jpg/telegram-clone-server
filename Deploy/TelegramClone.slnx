@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="TelegramClone.Client/TelegramClone.Client.csproj" />
+  <Project Path="TelegramClone.Server/TelegramClone.Server.csproj" />
+  <Project Path="TelegramClone.Shared/TelegramClone.Shared.csproj" />
+</Solution>

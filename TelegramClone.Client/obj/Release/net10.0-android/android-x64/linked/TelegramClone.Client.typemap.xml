@@ -1,5 +1,5 @@
-<api type="release" assembly-name="TelegramClone.Client" mvid="d393f72a97574835b3cd7151c60ed418">
-  <module assembly-name="TelegramClone.Client" mvid="d393f72a97574835b3cd7151c60ed418" mvid-bytes="KveT01eXNUizzXFRxg7UGA==">
+<api type="release" assembly-name="TelegramClone.Client" mvid="e1289e7a4f38430391955c0b6cf91f02">
+  <module assembly-name="TelegramClone.Client" mvid="e1289e7a4f38430391955c0b6cf91f02" mvid-bytes="ep4o4ThPA0ORlVwLbPkfAg==">
     <types-scratch>
       <entry key="crc64630b5e60837dcca9/MainActivity" java-name="crc64630b5e60837dcca9/MainActivity" managed-type-name="TelegramClone.Client.MainActivity" token="33554454" />
       <entry key="crc64630b5e60837dcca9/MainApplication" java-name="crc64630b5e60837dcca9/MainApplication" managed-type-name="TelegramClone.Client.MainApplication" token="33554455" />

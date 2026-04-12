@@ -1,0 +1,7 @@
+bin/
+obj/
+*.db
+*.keystore
+*.pfx
+*.csproj.user
+launchSettings.json

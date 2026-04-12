@@ -6,8 +6,7 @@ namespace TelegramClone.Client;
 
 public partial class MainPage : ContentPage
 {
-    private const string ServerUrl = "http://192.168.1.48:5276";
-    
+private const string ServerUrl = "https://telegram-clone-server-0egk.onrender.com";    
     public MainPage()
     {
         InitializeComponent();
@@ -37,7 +36,6 @@ public partial class MainPage : ContentPage
         
         try
         {
-            // Создаем новый HttpClient для каждого запроса
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromSeconds(30);
             
@@ -99,7 +97,6 @@ public partial class MainPage : ContentPage
         
         try
         {
-            // Создаем новый HttpClient для каждого запроса
             using var httpClient = new HttpClient();
             httpClient.Timeout = TimeSpan.FromSeconds(30);
             

@@ -161,3 +161,4 @@ C:\Projects\TelegramClone\TelegramClone.Server\obj\Debug\net10.0\refint\Telegram
 C:\Projects\TelegramClone\TelegramClone.Server\obj\Debug\net10.0\TelegramClone.Server.pdb
 C:\Projects\TelegramClone\TelegramClone.Server\obj\Debug\net10.0\TelegramClone.Server.genruntimeconfig.cache
 C:\Projects\TelegramClone\TelegramClone.Server\obj\Debug\net10.0\ref\TelegramClone.Server.dll
+C:\Projects\TelegramClone\TelegramClone.Server\obj\Debug\net10.0\TelegramClone.Server.sourcelink.json
