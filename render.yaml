@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: telegram-clone-server
+    runtime: docker
+    repo: https://github.com/wellquick999-jpg/telegram-clone-server
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
