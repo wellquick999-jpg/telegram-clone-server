@@ -6,11 +6,9 @@ using TelegramClone.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// НАСТРОЙКА Kestrel - слушаем все IP
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(5276);
-});
+// НАСТРОЙКА ПОРТА ДЛЯ RENDER.COM (ОЧЕНЬ ВАЖНО!)
+var port = Environment.GetEnvironmentVariable("PORT") ?? "80";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -65,12 +63,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// app.UseHttpsRedirection(); // Временно отключаем для теста
 app.UseCors("AllowAll");
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication(); // Временно отключаем для теста
+// app.UseAuthorization(); // Временно отключаем для теста
 app.MapControllers();
 
-// ТЕСТОВЫЙ ЭНДПОИНТ - проверка работоспособности сервера
+// ТЕСТОВЫЕ ЭНДПОИНТЫ (для проверки работы сервера)
+app.MapGet("/", () => "Server is alive!");
+app.MapGet("/ping", () => "pong");
 app.MapGet("/test", () => "Server is working!");
 
 // Создаем базу данных при запуске
@@ -81,6 +82,7 @@ using (var scope = app.Services.CreateScope())
     Console.WriteLine("Database created successfully!");
 }
 
-Console.WriteLine($"Server running on http://0.0.0.0:5276");
-Console.WriteLine($"Test endpoint: http://192.168.1.48:5276/test");
+Console.WriteLine($"Server running on http://0.0.0.0:{port}");
+Console.WriteLine($"Test endpoint: http://0.0.0.0:{port}/test");
+Console.WriteLine($"Ping endpoint: http://0.0.0.0:{port}/ping");
 app.Run();
