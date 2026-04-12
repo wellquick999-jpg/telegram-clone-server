@@ -6,7 +6,8 @@ using TelegramClone.Server.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Никаких ListenAnyIP, никаких UseUrls — полагаемся на окружение Render
+// НЕ НАСТРАИВАЕМ ПОРТ ВРУЧНУЮ — Render сам задаст через PORT
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -52,14 +53,28 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// Простейший тестовый маршрут
+// Тестовые эндпоинты
+app.MapGet("/", () => "Server is alive!");
 app.MapGet("/ping", () => "pong");
 
+// Исправляем индекс Messages (удаляем UNIQUE constraint)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    Console.WriteLine("Database created successfully!");
+    
+    try
+    {
+        // Удаляем старый уникальный индекс
+        dbContext.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Messages_ChatId");
+        // Создаём обычный индекс
+        dbContext.Database.ExecuteSqlRaw("CREATE INDEX IX_Messages_ChatId ON Messages(ChatId)");
+        Console.WriteLine("Index IX_Messages_ChatId fixed (non-unique)");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Note: {ex.Message}");
+    }
 }
 
 app.Run();
