@@ -7,16 +7,28 @@ using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Читаем строку подключения из переменной окружения
+// Читаем строку подключения из переменной окружения DATABASE_URL
 var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+// Если переменной нет, используем строку из appsettings.json (SQLite)
 if (string.IsNullOrEmpty(connectionString))
 {
     connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlite(connectionString));
+}
+else
+{
+    // Для PostgreSQL добавляем порт :5432 если его нет
+    if (!connectionString.Contains(":5432"))
+    {
+        connectionString = connectionString.Replace("@dpg-", ":5432@dpg-");
+    }
+    builder.Services.AddDbContext<AppDbContext>(options =>
+        options.UseNpgsql(connectionString));
 }
 
 builder.Services.AddControllers();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -81,7 +93,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    Console.WriteLine("Database created successfully!");
+    Console.WriteLine($"Database created successfully! Using {(connectionString.Contains("postgres") ? "PostgreSQL" : "SQLite")}");
 }
 
 app.Run();
