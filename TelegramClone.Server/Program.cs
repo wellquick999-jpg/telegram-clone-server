@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));builder.Services.AddSignalR();
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -34,7 +35,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "my-super-secret-key-for-telegram-clone-app-2024-very-long"))
         };
         
-        // Для SignalR
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -74,17 +74,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    
-    try
-    {
-        dbContext.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Messages_ChatId");
-        dbContext.Database.ExecuteSqlRaw("CREATE INDEX IX_Messages_ChatId ON Messages(ChatId)");
-        Console.WriteLine("Index IX_Messages_ChatId fixed (non-unique)");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Note: {ex.Message}");
-    }
+    Console.WriteLine("Database created successfully!");
 }
 
 app.Run();
