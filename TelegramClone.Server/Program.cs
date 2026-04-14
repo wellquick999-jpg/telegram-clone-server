@@ -7,25 +7,42 @@ using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Читаем строку подключения из переменной окружения DATABASE_URL
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+// Получаем строку подключения из переменной окружения
+var rawConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-// Если переменной нет, используем строку из appsettings.json (SQLite)
-if (string.IsNullOrEmpty(connectionString))
+string connectionString;
+
+if (!string.IsNullOrEmpty(rawConnectionString))
 {
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // Конвертируем postgresql://... в Host=...;Database=...;Username=...;Password=...
+    try
+    {
+        var uri = new Uri(rawConnectionString);
+        var userInfo = uri.UserInfo.Split(':');
+        var host = uri.Host;
+        var port = uri.Port > 0 ? uri.Port : 5432;
+        var database = uri.AbsolutePath.TrimStart('/');
+        var username = userInfo[0];
+        var password = userInfo[1];
+        
+        connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
+        Console.WriteLine($"Converted connection string for PostgreSQL");
+    }
+    catch
+    {
+        connectionString = rawConnectionString;
+    }
+    
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(connectionString));
+        options.UseNpgsql(connectionString));
 }
 else
 {
-    // Для PostgreSQL добавляем порт :5432 если его нет
-    if (!connectionString.Contains(":5432"))
-    {
-        connectionString = connectionString.Replace("@dpg-", ":5432@dpg-");
-    }
+    // SQLite как запасной вариант
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(connectionString));
+        options.UseSqlite(connectionString));
+    Console.WriteLine("Using SQLite database");
 }
 
 builder.Services.AddControllers();
@@ -93,7 +110,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    Console.WriteLine($"Database created successfully! Using {(connectionString.Contains("postgres") ? "PostgreSQL" : "SQLite")}");
+    Console.WriteLine("Database created successfully!");
 }
 
 app.Run();
