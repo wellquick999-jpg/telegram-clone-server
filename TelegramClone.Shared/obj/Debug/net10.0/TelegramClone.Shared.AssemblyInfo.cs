@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TelegramClone.Shared")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+622bcb9e6e2a111e9680a468237ce0735552f24c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2cd886df877b96d914896637c85b16dda4694172")]
 [assembly: System.Reflection.AssemblyProductAttribute("TelegramClone.Shared")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TelegramClone.Shared")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
