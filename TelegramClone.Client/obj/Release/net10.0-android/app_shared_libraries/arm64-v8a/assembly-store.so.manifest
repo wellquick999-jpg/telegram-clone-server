@@ -149,7 +149,7 @@
 0x991d510397f92d9d di:15 mi:15 do:221950 ds:167738 ddo:0 dds:0 cdo:0 cds:0 System.Linq.Expressions
 0x999cb19e1a04ffd3 di:76 mi:76 do:3155679 ds:15105 ddo:0 dds:0 cdo:0 cds:0 CommunityToolkit.Mvvm.dll
 0x99cdc6d1f2d3a72f di:57 mi:57 do:2972507 ds:9984 ddo:0 dds:0 cdo:0 cds:0 ko/Microsoft.Maui.Controls.resources.dll
-0x9c48a3d0eb3607cc di:122 mi:122 do:5780082 ds:5311 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Shared
+0x9c48a3d0eb3607cc di:122 mi:122 do:5780082 ds:5313 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Shared
 0x9d74dee1a7725f34 di:78 mi:78 do:3179685 ds:3143 ddo:0 dds:0 cdo:0 cds:0 Microsoft.Extensions.Configuration.Abstractions.dll
 0x9e4534b6adaf6e84 di:60 mi:60 do:3002456 ds:9989 ddo:0 dds:0 cdo:0 cds:0 nl/Microsoft.Maui.Controls.resources
 0x9ef542cf1f78c506 di:105 mi:105 do:5260373 ds:8355 ddo:0 dds:0 cdo:0 cds:0 Xamarin.AndroidX.Lifecycle.LiveData.Core
@@ -186,7 +186,7 @@
 0xb960d6b2200ba320 di:107 mi:107 do:5281054 ds:6407 ddo:0 dds:0 cdo:0 cds:0 Xamarin.AndroidX.Lifecycle.ViewModelSavedState.Android.dll
 0xb9fc3c8a556e3691 di:56 mi:56 do:2962510 ds:9997 ddo:0 dds:0 cdo:0 cds:0 ja/Microsoft.Maui.Controls.resources
 0xba48785529705af9 di:3 mi:3 do:39800 ds:16723 ddo:0 dds:0 cdo:0 cds:0 System.Collections.dll
-0xba6a338e675c211d di:123 mi:123 do:5785393 ds:67070 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Client
+0xba6a338e675c211d di:123 mi:123 do:5785395 ds:67071 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Client
 0xbd0e2c0d55246576 di:18 mi:18 do:429930 ds:71642 ddo:0 dds:0 cdo:0 cds:0 System.Net.Http.dll
 0xbd437a2cdb333d0d di:117 mi:117 do:5528868 ds:14386 ddo:0 dds:0 cdo:0 cds:0 Xamarin.AndroidX.ViewPager2
 0xbee38d4a88835966 di:95 mi:95 do:4948022 ds:8107 ddo:0 dds:0 cdo:0 cds:0 Xamarin.AndroidX.AppCompat.AppCompatResources
@@ -225,11 +225,11 @@
 0xe2420585aeceb728 di:20 mi:20 do:526396 ds:4058 ddo:0 dds:0 cdo:0 cds:0 System.Net.Requests.dll
 0xe3811d68d4fe8463 di:62 mi:62 do:3022425 ds:9996 ddo:0 dds:0 cdo:0 cds:0 pt-BR/Microsoft.Maui.Controls.resources.dll
 0xe494f7ced4ecd10a di:53 mi:53 do:2932561 ds:9985 ddo:0 dds:0 cdo:0 cds:0 hu/Microsoft.Maui.Controls.resources.dll
-0xe85a07dea1aade68 di:123 mi:123 do:5785393 ds:67070 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Client.dll
+0xe85a07dea1aade68 di:123 mi:123 do:5785395 ds:67071 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Client.dll
 0xe89a2a9ef110899b di:10 mi:10 do:152785 ds:2366 ddo:0 dds:0 cdo:0 cds:0 System.Drawing.dll
 0xedc632067fb20ff3 di:17 mi:17 do:421177 ds:8753 ddo:0 dds:0 cdo:0 cds:0 System.Memory.dll
 0xef72742e1bcca27a di:91 mi:91 do:4630924 ds:32612 ddo:0 dds:0 cdo:0 cds:0 Microsoft.Maui.Essentials.dll
-0xefe443acb427e3af di:122 mi:122 do:5780082 ds:5311 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Shared.dll
+0xefe443acb427e3af di:122 mi:122 do:5780082 ds:5313 ddo:0 dds:0 cdo:0 cds:0 TelegramClone.Shared.dll
 0xefec0b7fdc57ec42 di:93 mi:93 do:4773197 ds:24277 ddo:0 dds:0 cdo:0 cds:0 Xamarin.AndroidX.Activity
 0xf00c29406ea45e19 di:47 mi:47 do:2872633 ds:9985 ddo:0 dds:0 cdo:0 cds:0 es/Microsoft.Maui.Controls.resources.dll
 0xf11b621fc87b983f di:89 mi:89 do:4154856 ds:73268 ddo:0 dds:0 cdo:0 cds:0 Microsoft.Maui.Controls.Xaml.dll

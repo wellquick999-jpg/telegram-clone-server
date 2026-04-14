@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR.Client;
 using CommunityToolkit.Mvvm.Messaging;
 using TelegramClone.Client.Messages;
 using TelegramClone.Shared.Models;
@@ -16,6 +17,7 @@ public partial class ChatPage : ContentPage
     private Guid _currentUserId;
     private Timer? _typingTimer;
     private bool _isTypingSent;
+    private HubConnection? _hubConnection;
     
     public string StatusText { get; private set; } = "";
     public Color StatusColor { get; private set; } = Colors.Gray;
@@ -35,6 +37,7 @@ public partial class ChatPage : ContentPage
         GetCurrentUserId();
         _ = LoadMessagesAsync();
         _ = LoadUserStatusAsync();
+        _ = ConnectToSignalRAsync();
     }
     
     public string ChatName => _chat.Name;
@@ -76,6 +79,129 @@ public partial class ChatPage : ContentPage
         catch
         {
             _currentUserId = Guid.Empty;
+        }
+    }
+    
+    private async Task ConnectToSignalRAsync()
+    {
+        try
+        {
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl($"{_serverUrl}/chathub", options =>
+                {
+                    options.AccessTokenProvider = () => Task.FromResult(_token);
+                })
+                .WithAutomaticReconnect()
+                .Build();
+            
+            _hubConnection.On<string>("ReceiveMessage", async (messageId) =>
+            {
+                await LoadNewMessageAsync(messageId);
+            });
+            
+            _hubConnection.On<string>("MessageEdited", async (messageId) =>
+            {
+                await UpdateMessageAsync(messageId);
+            });
+            
+            _hubConnection.On<string>("MessageDeleted", async (messageId) =>
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    var message = Messages.FirstOrDefault(m => m.Id.ToString() == messageId);
+                    if (message != null)
+                    {
+                        Messages.Remove(message);
+                        OnPropertyChanged(nameof(Messages));
+                    }
+                });
+            });
+            
+            await _hubConnection.StartAsync();
+            Console.WriteLine("Connected to SignalR hub");
+            
+            await _hubConnection.InvokeAsync("JoinChat", _chat.Id.ToString());
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SignalR connection error: {ex.Message}");
+        }
+    }
+    
+    private async Task LoadNewMessageAsync(string messageId)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_serverUrl}/api/messages/{messageId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var newMessage = JsonSerializer.Deserialize<Message>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                
+                if (newMessage != null && !Messages.Any(m => m.Id == newMessage.Id))
+                {
+                    newMessage.Timestamp = newMessage.Timestamp.ToLocalTime();
+                    
+                    var newViewModel = new MessageViewModel
+                    {
+                        Id = newMessage.Id,
+                        Text = newMessage.Text,
+                        Timestamp = newMessage.Timestamp,
+                        IsMine = newMessage.SenderId == _currentUserId,
+                        IsEdited = newMessage.IsEdited
+                    };
+                    
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var updatedMessages = new List<MessageViewModel>(Messages);
+                        updatedMessages.Add(newViewModel);
+                        Messages = updatedMessages;
+                        
+                        MessagesCollection.ScrollTo(newViewModel, position: ScrollToPosition.End, animate: true);
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Load new message error: {ex.Message}");
+        }
+    }
+    
+    private async Task UpdateMessageAsync(string messageId)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_serverUrl}/api/messages/{messageId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                var updatedMessage = JsonSerializer.Deserialize<Message>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+                
+                if (updatedMessage != null)
+                {
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var index = Messages.FindIndex(m => m.Id.ToString() == messageId);
+                        if (index != -1)
+                        {
+                            Messages[index].Text = updatedMessage.Text;
+                            Messages[index].IsEdited = updatedMessage.IsEdited;
+                            OnPropertyChanged(nameof(Messages));
+                        }
+                    });
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Update message error: {ex.Message}");
         }
     }
     
@@ -465,6 +591,23 @@ public partial class ChatPage : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Ошибка", ex.Message, "OK");
+        }
+    }
+    
+    protected override async void OnDisappearing()
+    {
+        base.OnDisappearing();
+        if (_hubConnection != null)
+        {
+            try
+            {
+                await _hubConnection.InvokeAsync("LeaveChat", _chat.Id.ToString());
+                await _hubConnection.DisposeAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error disconnecting from SignalR: {ex.Message}");
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 using TelegramClone.Server.Data;
+using TelegramClone.Server.Hubs;
 using TelegramClone.Shared.Models;
 
 namespace TelegramClone.Server.Controllers;
@@ -11,10 +13,12 @@ namespace TelegramClone.Server.Controllers;
 public class MessagesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IHubContext<ChatHub> _hubContext;
     
-    public MessagesController(AppDbContext context)
+    public MessagesController(AppDbContext context, IHubContext<ChatHub> hubContext)
     {
         _context = context;
+        _hubContext = hubContext;
     }
     
     private Guid GetCurrentUserId()
@@ -48,6 +52,25 @@ public class MessagesController : ControllerBase
         _context.Messages.Add(message);
         await _context.SaveChangesAsync();
         
+        // SignalR уведомление
+        await _hubContext.Clients.Group(request.ChatId.ToString()).SendAsync("ReceiveMessage", message.Id.ToString());
+        
+        return Ok(message);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetMessage(Guid id)
+    {
+        var userId = GetCurrentUserId();
+        
+        var message = await _context.Messages.FindAsync(id);
+        if (message == null)
+            return NotFound("Сообщение не найдено");
+        
+        var chat = await _context.Chats.FindAsync(message.ChatId);
+        if (chat == null || !chat.ParticipantIds.Contains(userId))
+            return Forbid();
+        
         return Ok(message);
     }
     
@@ -63,14 +86,13 @@ public class MessagesController : ControllerBase
         if (message.SenderId != userId)
             return Forbid("Вы не можете редактировать чужие сообщения");
         
-        var timeSinceSent = DateTime.UtcNow - message.Timestamp;
-        if (timeSinceSent.TotalMinutes > 60)
-            return BadRequest("Нельзя редактировать сообщения старше 1 часа");
-        
         message.Text = request.Text;
         message.IsEdited = true;
         
         await _context.SaveChangesAsync();
+        
+        // Уведомляем о редактировании
+        await _hubContext.Clients.Group(message.ChatId.ToString()).SendAsync("MessageEdited", messageId.ToString());
         
         return Ok(message);
     }
@@ -89,6 +111,8 @@ public class MessagesController : ControllerBase
         
         _context.Messages.Remove(message);
         await _context.SaveChangesAsync();
+        
+        await _hubContext.Clients.Group(message.ChatId.ToString()).SendAsync("MessageDeleted", messageId.ToString());
         
         return Ok(new { Message = "Сообщение удалено" });
     }

@@ -6,7 +6,9 @@ namespace TelegramClone.Client;
 
 public partial class MainPage : ContentPage
 {
-private const string ServerUrl = "https://telegram-clone-server-0egk.onrender.com";    
+    // ОБЛАЧНЫЙ СЕРВЕР НА RENDER.COM
+    private const string ServerUrl = "https://telegram-clone-server-2.onrender.com";
+    
     public MainPage()
     {
         InitializeComponent();

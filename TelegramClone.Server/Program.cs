@@ -3,10 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TelegramClone.Server.Data;
+using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// НЕ НАСТРАИВАЕМ ПОРТ ВРУЧНУЮ — Render сам задаст через PORT
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -35,6 +34,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "my-super-secret-key-for-telegram-clone-app-2024-very-long"))
         };
+        
+        // Для SignalR
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chathub"))
+                {
+                    context.Token = accessToken;
+                }
+                return Task.CompletedTask;
+            }
+        };
     });
 builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
@@ -52,12 +66,11 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
 
-// Тестовые эндпоинты
 app.MapGet("/", () => "Server is alive!");
 app.MapGet("/ping", () => "pong");
 
-// Исправляем индекс Messages (удаляем UNIQUE constraint)
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -65,9 +78,7 @@ using (var scope = app.Services.CreateScope())
     
     try
     {
-        // Удаляем старый уникальный индекс
         dbContext.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Messages_ChatId");
-        // Создаём обычный индекс
         dbContext.Database.ExecuteSqlRaw("CREATE INDEX IX_Messages_ChatId ON Messages(ChatId)");
         Console.WriteLine("Index IX_Messages_ChatId fixed (non-unique)");
     }
