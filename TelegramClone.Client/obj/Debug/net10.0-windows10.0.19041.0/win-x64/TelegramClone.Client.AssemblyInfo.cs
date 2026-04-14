@@ -17,7 +17,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TelegramClone.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+534cabfd9ef48a9239b54ed38db812b701d85f9c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+622bcb9e6e2a111e9680a468237ce0735552f24c")]
 [assembly: System.Reflection.AssemblyProductAttribute("TelegramClone.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TelegramClone.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
