@@ -7,9 +7,16 @@ using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Читаем строку подключения из переменной окружения
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (string.IsNullOrEmpty(connectionString))
+{
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+}
+
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
