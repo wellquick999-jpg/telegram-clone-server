@@ -1,10 +1,12 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
+# Копируем все проекты
 COPY TelegramClone.Shared/ TelegramClone.Shared/
 COPY TelegramClone.Server/ TelegramClone.Server/
 COPY TelegramClone.slnx .
 
+# Восстанавливаем и собираем сервер
 RUN dotnet restore TelegramClone.Server/TelegramClone.Server.csproj
 RUN dotnet publish TelegramClone.Server/TelegramClone.Server.csproj -c Release -o /app/publish
 
