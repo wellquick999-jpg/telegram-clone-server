@@ -7,21 +7,9 @@ using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Пытаемся подключиться к PostgreSQL через DATABASE_URL
-var pgConnection = Environment.GetEnvironmentVariable("DATABASE_URL");
-if (!string.IsNullOrEmpty(pgConnection))
-{
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(pgConnection));
-}
-else
-{
-    // Запасной вариант — SQLite
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-}
-
 builder.Services.AddControllers();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -86,7 +74,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    Console.WriteLine($"Database created successfully! Using {(string.IsNullOrEmpty(pgConnection) ? "SQLite" : "PostgreSQL")}");
+    Console.WriteLine("Database created successfully! (SQLite)");
 }
 
 app.Run();
