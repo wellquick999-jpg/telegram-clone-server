@@ -7,42 +7,18 @@ using TelegramClone.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Получаем строку подключения из переменной окружения
-var rawConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-
-string connectionString;
-
-if (!string.IsNullOrEmpty(rawConnectionString))
+// Пытаемся подключиться к PostgreSQL через DATABASE_URL
+var pgConnection = Environment.GetEnvironmentVariable("DATABASE_URL");
+if (!string.IsNullOrEmpty(pgConnection))
 {
-    // Конвертируем postgresql://... в Host=...;Database=...;Username=...;Password=...
-    try
-    {
-        var uri = new Uri(rawConnectionString);
-        var userInfo = uri.UserInfo.Split(':');
-        var host = uri.Host;
-        var port = uri.Port > 0 ? uri.Port : 5432;
-        var database = uri.AbsolutePath.TrimStart('/');
-        var username = userInfo[0];
-        var password = userInfo[1];
-        
-        connectionString = $"Host={host};Port={port};Database={database};Username={username};Password={password};SSL Mode=Require;Trust Server Certificate=true";
-        Console.WriteLine($"Converted connection string for PostgreSQL");
-    }
-    catch
-    {
-        connectionString = rawConnectionString;
-    }
-    
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(connectionString));
+        options.UseNpgsql(pgConnection));
 }
 else
 {
-    // SQLite как запасной вариант
-    connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // Запасной вариант — SQLite
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(connectionString));
-    Console.WriteLine("Using SQLite database");
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
 builder.Services.AddControllers();
@@ -110,7 +86,7 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
-    Console.WriteLine("Database created successfully!");
+    Console.WriteLine($"Database created successfully! Using {(string.IsNullOrEmpty(pgConnection) ? "SQLite" : "PostgreSQL")}");
 }
 
 app.Run();
