@@ -74,6 +74,19 @@ using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.EnsureCreated();
+    
+    // Исправляем UNIQUE индекс на Messages.ChatId
+    try
+    {
+        dbContext.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_Messages_ChatId");
+        dbContext.Database.ExecuteSqlRaw("CREATE INDEX IX_Messages_ChatId ON Messages(ChatId)");
+        Console.WriteLine("Fixed UNIQUE index on Messages.ChatId");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Note: {ex.Message}");
+    }
+    
     Console.WriteLine("Database created successfully! (SQLite)");
 }
 
