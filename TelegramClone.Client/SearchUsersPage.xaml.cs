@@ -35,8 +35,6 @@ public partial class SearchUsersPage : ContentPage
             var response = await _httpClient.GetAsync($"{_serverUrl}/api/users/search?query={Uri.EscapeDataString(query)}");
             var responseText = await response.Content.ReadAsStringAsync();
             
-            System.Diagnostics.Debug.WriteLine($"Search response: {responseText}");
-            
             if (response.IsSuccessStatusCode)
             {
                 var users = JsonSerializer.Deserialize<List<User>>(responseText, new JsonSerializerOptions
@@ -81,17 +79,11 @@ public partial class SearchUsersPage : ContentPage
             
             try
             {
-                System.Diagnostics.Debug.WriteLine($"Creating chat with user: {selectedUser.Id} - {selectedUser.Username}");
-                
                 var response = await _httpClient.PostAsync($"{_serverUrl}/api/chats/private", content);
                 var responseText = await response.Content.ReadAsStringAsync();
                 
-                System.Diagnostics.Debug.WriteLine($"Create chat response status: {response.StatusCode}");
-                System.Diagnostics.Debug.WriteLine($"Create chat response: {responseText}");
-                
                 if (response.IsSuccessStatusCode)
                 {
-                    // Десериализуем ответ в Chat объект
                     var newChat = JsonSerializer.Deserialize<Chat>(responseText, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
@@ -99,7 +91,7 @@ public partial class SearchUsersPage : ContentPage
                     
                     if (newChat != null)
                     {
-                        await DisplayAlert("Успех", $"Чат с {selectedUser.Username} создан!", "OK");
+                        await ShowToast($"✅ Чат с {selectedUser.Username} создан!", Colors.Green);
                         
                         // Отправляем уведомление об обновлении чатов
                         WeakReferenceMessenger.Default.Send(new RefreshChatsMessage());
@@ -109,18 +101,61 @@ public partial class SearchUsersPage : ContentPage
                     }
                     else
                     {
-                        await DisplayAlert("Ошибка", "Не удалось создать чат", "OK");
+                        await ShowToast("❌ Не удалось создать чат", Colors.Red);
                     }
                 }
                 else
                 {
-                    await DisplayAlert("Ошибка", $"Не удалось создать чат: {responseText}", "OK");
+                    await ShowToast($"❌ Ошибка: {responseText}", Colors.Red);
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Ошибка", ex.Message, "OK");
+                await ShowToast($"❌ Ошибка: {ex.Message}", Colors.Red);
             }
         }
+    }
+    
+    private async Task ShowToast(string message, Color backgroundColor)
+    {
+        var toast = new Label
+        {
+            Text = message,
+            BackgroundColor = backgroundColor,
+            TextColor = Colors.White,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.End,
+            Padding = new Thickness(20, 10),
+            Margin = new Thickness(20, 0, 20, 30),
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            Opacity = 0
+        };
+        
+        var grid = this.Content as Grid;
+        if (grid == null)
+        {
+            grid = new Grid();
+            if (this.Content is Layout layout)
+            {
+                var children = layout.Children.ToList();
+                layout.Children.Clear();
+                grid.Children.Add(layout);
+                foreach (var child in children)
+                {
+                    layout.Children.Add(child);
+                }
+            }
+            this.Content = grid;
+        }
+        
+        grid.Children.Add(toast);
+        Grid.SetRow(toast, grid.RowDefinitions.Count - 1);
+        
+        await toast.FadeTo(1, 300);
+        await Task.Delay(2000);
+        await toast.FadeTo(0, 300);
+        
+        grid.Children.Remove(toast);
     }
 }

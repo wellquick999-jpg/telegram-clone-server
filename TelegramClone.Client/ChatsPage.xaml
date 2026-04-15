@@ -13,7 +13,7 @@
         
         <!-- Кнопки -->
         <Grid Grid.Row="0" 
-              ColumnDefinitions="*,Auto,Auto"
+              ColumnDefinitions="*,Auto,Auto,Auto"
               Margin="10">
             
             <Button Grid.Column="0"
@@ -22,7 +22,18 @@
                     BackgroundColor="#2A6B9F"
                     TextColor="White"/>
             
+            <!-- Кнопка переключения темы -->
             <Button Grid.Column="1"
+                    x:Name="ThemeToggleButton"
+                    Text="🌙"
+                    Clicked="OnThemeToggleClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                    FontSize="20"
+                    WidthRequest="50"/>
+            
+            <!-- Кнопка настроек -->
+            <Button Grid.Column="2"
                     Text="⚙️"
                     Clicked="OnSettingsClicked"
                     BackgroundColor="Transparent"
@@ -30,7 +41,8 @@
                     FontSize="20"
                     WidthRequest="50"/>
             
-            <Button Grid.Column="2"
+            <!-- Кнопка выхода -->
+            <Button Grid.Column="3"
                     Text="🚪"
                     Clicked="OnLogoutClicked"
                     BackgroundColor="Transparent"

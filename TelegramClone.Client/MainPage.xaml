@@ -2,41 +2,69 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TelegramClone.Client.MainPage"
-             Title="Telegram Clone">
-
-    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
-
-        <Label Text="Telegram Clone"
-               FontSize="32"
-               FontAttributes="Bold"
-               HorizontalOptions="Center"/>
-
-        <Label Text="Вход в аккаунт"
-               FontSize="18"
-               HorizontalOptions="Center"/>
-
-        <Entry x:Name="PhoneNumberEntry"
-               Placeholder="Номер телефона"
-               Keyboard="Telephone"/>
-
-        <Entry x:Name="PasswordEntry"
-               Placeholder="Пароль"
-               IsPassword="True"/>
-
-        <Button Text="Войти"
-                Clicked="OnLoginClicked"
-                BackgroundColor="#2A6B9F"
-                TextColor="White"/>
-
-        <Button Text="Регистрация"
-                Clicked="OnRegisterClicked"
-                BackgroundColor="#4CAF50"
-                TextColor="White"/>
-
-        <Label x:Name="StatusLabel"
-               Text=""
-               HorizontalOptions="Center"
-               TextColor="Red"/>
-
-    </VerticalStackLayout>
+             Title="Telegram Clone"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Кнопка переключения темы -->
+        <Button Grid.Row="0"
+                x:Name="ThemeToggleButton"
+                Text="🌙"
+                Clicked="OnThemeToggleClicked"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                FontSize="20"
+                WidthRequest="50"
+                HorizontalOptions="End"
+                Margin="0,10,10,0"/>
+        
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+                
+                <Label Text="Telegram Clone"
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       HorizontalOptions="Center"/>
+                
+                <Label Text="Вход в аккаунт"
+                       FontSize="18"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       HorizontalOptions="Center"/>
+                
+                <Entry x:Name="PhoneNumberEntry"
+                       Placeholder="Номер телефона"
+                       Keyboard="Telephone"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       PlaceholderColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
+                
+                <Entry x:Name="PasswordEntry"
+                       Placeholder="Пароль"
+                       IsPassword="True"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       PlaceholderColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
+                
+                <Button Text="Войти"
+                        Clicked="OnLoginClicked"
+                        BackgroundColor="#2A6B9F"
+                        TextColor="White"/>
+                
+                <Button Text="Регистрация"
+                        Clicked="OnRegisterClicked"
+                        BackgroundColor="#4CAF50"
+                        TextColor="White"/>
+                
+                <Label x:Name="StatusLabel"
+                       Text=""
+                       HorizontalOptions="Center"
+                       TextColor="Red"/>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

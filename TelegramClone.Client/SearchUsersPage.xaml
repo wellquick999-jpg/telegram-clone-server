@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TelegramClone.Client.SearchUsersPage"
-             Title="Поиск пользователей">
+             Title="Поиск пользователей"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
     
     <VerticalStackLayout Spacing="10" Padding="10">
         
@@ -10,45 +11,56 @@
         <Entry x:Name="SearchEntry"
                Placeholder="Введите номер телефона или имя"
                ReturnType="Search"
-               Completed="OnSearchCompleted"/>
+               Completed="OnSearchCompleted"
+               BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
+               TextColor="{AppThemeBinding Light=Black, Dark=White}"
+               PlaceholderColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
         
         <!-- Результаты поиска -->
         <CollectionView x:Name="UsersCollection"
                         SelectionMode="Single"
-                        SelectionChanged="OnUserSelected">
+                        SelectionChanged="OnUserSelected"
+                        BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" 
                           ColumnDefinitions="Auto,*,Auto"
-                          BackgroundColor="White">
+                          BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
                         
                         <!-- Аватар -->
                         <Frame Grid.Column="0" 
                                WidthRequest="50" 
                                HeightRequest="50"
                                CornerRadius="25"
-                               BackgroundColor="#E0E0E0">
+                               BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center">
                             <Label Text="{Binding Username[0]}" 
                                    FontSize="24"
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
                         </Frame>
                         
                         <!-- Информация о пользователе -->
                         <VerticalStackLayout Grid.Column="1" 
+                                             Spacing="5"
                                              Margin="10,0">
                             <Label Text="{Binding Username}" 
                                    FontSize="16"
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold"
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                             <Label Text="{Binding PhoneNumber}" 
                                    FontSize="12"
-                                   TextColor="Gray"/>
+                                   TextColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
                         </VerticalStackLayout>
                         
                         <!-- Кнопка выбора -->
                         <Label Grid.Column="2" 
                                Text="Выбрать"
                                TextColor="#2A6B9F"
+                               FontSize="14"
+                               FontAttributes="Bold"
                                VerticalOptions="Center"/>
                     </Grid>
                 </DataTemplate>
@@ -58,6 +70,7 @@
         <Label x:Name="StatusLabel" 
                Text=""
                HorizontalOptions="Center"
-               TextColor="Red"/>
+               TextColor="{AppThemeBinding Light=Red, Dark=#ff6666}"/>
+        
     </VerticalStackLayout>
 </ContentPage>

@@ -13,6 +13,9 @@ public partial class ChatsPage : ContentPage
     private readonly string _serverUrl;
     private List<ChatDisplayModel> _chats = new();
     
+    private const string ThemePreferenceKey = "app_theme";
+    private bool _isDarkTheme;
+    
     public ChatsPage(string token, string serverUrl)
     {
         InitializeComponent();
@@ -21,12 +24,87 @@ public partial class ChatsPage : ContentPage
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_token}");
         
+        // Загружаем сохранённую тему
+        _isDarkTheme = Preferences.Get(ThemePreferenceKey, "light") == "dark";
+        UpdateThemeButton();
+        ApplyTheme(_isDarkTheme);
+        
         WeakReferenceMessenger.Default.Register<RefreshChatsMessage>(this, async (recipient, message) =>
         {
             await RefreshChats();
         });
         
         LoadChats();
+    }
+    
+    private void UpdateThemeButton()
+    {
+        ThemeToggleButton.Text = _isDarkTheme ? "☀️" : "🌙";
+    }
+    
+    private void ApplyTheme(bool isDark)
+    {
+        if (isDark)
+        {
+            Application.Current.UserAppTheme = AppTheme.Dark;
+        }
+        else
+        {
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+    }
+    
+    private async void OnThemeToggleClicked(object sender, EventArgs e)
+    {
+        _isDarkTheme = !_isDarkTheme;
+        Preferences.Set(ThemePreferenceKey, _isDarkTheme ? "dark" : "light");
+        UpdateThemeButton();
+        ApplyTheme(_isDarkTheme);
+        
+        await ShowToast(_isDarkTheme ? "🌙 Темная тема включена" : "☀️ Светлая тема включена", Colors.Gray);
+    }
+    
+    private async Task ShowToast(string message, Color backgroundColor)
+    {
+        var toast = new Label
+        {
+            Text = message,
+            BackgroundColor = backgroundColor,
+            TextColor = Colors.White,
+            HorizontalOptions = LayoutOptions.Center,
+            VerticalOptions = LayoutOptions.End,
+            Padding = new Thickness(20, 10),
+            Margin = new Thickness(20, 0, 20, 30),
+            FontSize = 14,
+            FontAttributes = FontAttributes.Bold,
+            Opacity = 0
+        };
+        
+        var grid = this.Content as Grid;
+        if (grid == null)
+        {
+            grid = new Grid();
+            if (this.Content is Layout layout)
+            {
+                var children = layout.Children.ToList();
+                layout.Children.Clear();
+                grid.Children.Add(layout);
+                foreach (var child in children)
+                {
+                    layout.Children.Add(child);
+                }
+            }
+            this.Content = grid;
+        }
+        
+        grid.Children.Add(toast);
+        Grid.SetRow(toast, grid.RowDefinitions.Count - 1);
+        
+        await toast.FadeTo(1, 300);
+        await Task.Delay(2000);
+        await toast.FadeTo(0, 300);
+        
+        grid.Children.Remove(toast);
     }
     
     private async void LoadChats()
@@ -79,7 +157,7 @@ public partial class ChatsPage : ContentPage
     
     private async void OnSettingsClicked(object sender, EventArgs e)
     {
-        var settingsPage = new SettingsPage();
+        var settingsPage = new SettingsPage(_token, _serverUrl);
         await Navigation.PushAsync(settingsPage);
     }
     
