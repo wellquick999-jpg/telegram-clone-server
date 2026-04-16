@@ -56,7 +56,6 @@ public partial class EditProfilePage : ContentPage
             
             if (result != null)
             {
-                var stream = await result.OpenReadAsync();
                 await ShowToast("Функция будет добавлена позже", Colors.Orange);
             }
         }
@@ -74,7 +73,6 @@ public partial class EditProfilePage : ContentPage
             
             if (result != null)
             {
-                var stream = await result.OpenReadAsync();
                 await ShowToast("Функция будет добавлена позже", Colors.Orange);
             }
         }
@@ -89,6 +87,9 @@ public partial class EditProfilePage : ContentPage
         var newUsername = UsernameEntry.Text?.Trim();
         var newBio = BioEntry.Text?.Trim();
         
+        // Отладка
+        System.Diagnostics.Debug.WriteLine($"Saving - Username: {newUsername}, Bio: {newBio}");
+        
         if (string.IsNullOrWhiteSpace(newUsername))
         {
             await ShowToast("Имя пользователя не может быть пустым", Colors.Red);
@@ -102,12 +103,16 @@ public partial class EditProfilePage : ContentPage
         };
         
         var json = JsonSerializer.Serialize(updateData);
+        System.Diagnostics.Debug.WriteLine($"Sending JSON: {json}");
+        
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         
         try
         {
             var response = await _httpClient.PutAsync($"{_serverUrl}/api/users/profile", content);
             var responseText = await response.Content.ReadAsStringAsync();
+            
+            System.Diagnostics.Debug.WriteLine($"Response: {response.StatusCode} - {responseText}");
             
             if (response.IsSuccessStatusCode)
             {
@@ -123,6 +128,7 @@ public partial class EditProfilePage : ContentPage
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
             await ShowToast($"❌ Ошибка: {ex.Message}", Colors.Red);
         }
     }

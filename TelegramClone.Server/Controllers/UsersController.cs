@@ -25,7 +25,6 @@ public class UsersController : ControllerBase
         return Guid.Parse(userIdClaim.Value);
     }
     
-    // GET: api/users/search?query=...
     [HttpGet("search")]
     public async Task<IActionResult> SearchUsers([FromQuery] string query)
     {
@@ -46,6 +45,7 @@ public class UsersController : ControllerBase
                     u.Username,
                     u.PhoneNumber,
                     u.AvatarUrl,
+                    u.Bio,
                     u.IsOnline,
                     u.LastSeen
                 })
@@ -59,7 +59,6 @@ public class UsersController : ControllerBase
         }
     }
     
-    // GET: api/users/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
@@ -73,6 +72,7 @@ public class UsersController : ControllerBase
                 u.Username,
                 u.PhoneNumber,
                 u.AvatarUrl,
+                u.Bio,
                 u.IsOnline,
                 u.LastSeen,
                 u.CreatedAt
@@ -85,7 +85,6 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
     
-    // GET: api/users/me
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
@@ -101,6 +100,7 @@ public class UsersController : ControllerBase
                     u.Username,
                     u.PhoneNumber,
                     u.AvatarUrl,
+                    u.Bio,
                     u.IsOnline,
                     u.LastSeen,
                     u.CreatedAt
@@ -118,7 +118,6 @@ public class UsersController : ControllerBase
         }
     }
     
-    // GET: api/users/status/{userId}
     [HttpGet("status/{userId}")]
     public async Task<IActionResult> GetUserStatus(Guid userId)
     {
@@ -139,7 +138,6 @@ public class UsersController : ControllerBase
         });
     }
     
-    // PUT: api/users/profile
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
@@ -160,6 +158,11 @@ public class UsersController : ControllerBase
             user.Username = request.Username;
         }
         
+        if (request.Bio != null)
+        {
+            user.Bio = request.Bio;
+        }
+        
         if (!string.IsNullOrWhiteSpace(request.AvatarUrl))
             user.AvatarUrl = request.AvatarUrl;
         
@@ -169,6 +172,7 @@ public class UsersController : ControllerBase
         {
             user.Id,
             user.Username,
+            user.Bio,
             user.AvatarUrl,
             user.IsOnline,
             user.LastSeen
@@ -195,5 +199,6 @@ public class UsersController : ControllerBase
 public class UpdateProfileRequest
 {
     public string? Username { get; set; }
+    public string? Bio { get; set; }
     public string? AvatarUrl { get; set; }
 }
