@@ -11,6 +11,7 @@ public partial class SearchUsersPage : ContentPage
     private readonly HttpClient _httpClient;
     private readonly string _token;
     private readonly string _serverUrl;
+    private bool _isSearching;
     
     public SearchUsersPage(string token, string serverUrl)
     {
@@ -19,14 +20,18 @@ public partial class SearchUsersPage : ContentPage
         _serverUrl = serverUrl;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_token}");
+        _httpClient.Timeout = TimeSpan.FromSeconds(10);
     }
     
     private async void OnSearchCompleted(object sender, EventArgs e)
     {
+        if (_isSearching) return;
+        
         var query = SearchEntry.Text;
         if (string.IsNullOrWhiteSpace(query))
             return;
         
+        _isSearching = true;
         StatusLabel.Text = "Поиск...";
         StatusLabel.TextColor = Colors.Blue;
         
@@ -55,16 +60,33 @@ public partial class SearchUsersPage : ContentPage
                     StatusLabel.TextColor = Colors.Red;
                 }
             }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway || 
+                     response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+            {
+                StatusLabel.Text = "Сервер временно недоступен, попробуйте позже";
+                StatusLabel.TextColor = Colors.Orange;
+                await ShowToast("⚠️ Сервер перегружен, попробуйте позже", Colors.Orange);
+            }
             else
             {
                 StatusLabel.Text = $"Ошибка: {response.StatusCode}";
                 StatusLabel.TextColor = Colors.Red;
             }
         }
+        catch (TaskCanceledException)
+        {
+            StatusLabel.Text = "Превышено время ожидания, попробуйте позже";
+            StatusLabel.TextColor = Colors.Orange;
+            await ShowToast("⏱️ Сервер не отвечает, попробуйте позже", Colors.Orange);
+        }
         catch (Exception ex)
         {
             StatusLabel.Text = $"Ошибка: {ex.Message}";
             StatusLabel.TextColor = Colors.Red;
+        }
+        finally
+        {
+            _isSearching = false;
         }
     }
     
@@ -76,6 +98,9 @@ public partial class SearchUsersPage : ContentPage
             
             var json = JsonSerializer.Serialize(selectedUser.Id);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
+            
+            StatusLabel.Text = "Создание чата...";
+            StatusLabel.TextColor = Colors.Blue;
             
             try
             {
@@ -92,11 +117,7 @@ public partial class SearchUsersPage : ContentPage
                     if (newChat != null)
                     {
                         await ShowToast($"✅ Чат с {selectedUser.Username} создан!", Colors.Green);
-                        
-                        // Отправляем уведомление об обновлении чатов
                         WeakReferenceMessenger.Default.Send(new RefreshChatsMessage());
-                        
-                        // Возвращаемся к списку чатов
                         await Navigation.PopAsync();
                     }
                     else
@@ -104,14 +125,26 @@ public partial class SearchUsersPage : ContentPage
                         await ShowToast("❌ Не удалось создать чат", Colors.Red);
                     }
                 }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
+                {
+                    await ShowToast("⚠️ Сервер временно недоступен, попробуйте позже", Colors.Orange);
+                }
                 else
                 {
-                    await ShowToast($"❌ Ошибка: {responseText}", Colors.Red);
+                    await ShowToast($"❌ Ошибка: {response.StatusCode}", Colors.Red);
                 }
+            }
+            catch (TaskCanceledException)
+            {
+                await ShowToast("⏱️ Превышено время ожидания", Colors.Orange);
             }
             catch (Exception ex)
             {
                 await ShowToast($"❌ Ошибка: {ex.Message}", Colors.Red);
+            }
+            finally
+            {
+                StatusLabel.Text = "";
             }
         }
     }

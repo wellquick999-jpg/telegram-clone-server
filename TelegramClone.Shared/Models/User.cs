@@ -7,6 +7,7 @@ public class User
     public string PhoneNumber { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string? AvatarUrl { get; set; }
+    public string? Bio { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsOnline { get; set; }
     public DateTime? LastSeen { get; set; }

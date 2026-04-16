@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TelegramClone.Client.EditProfilePage"
+             Title="Редактирование профиля"
+             BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
+    
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            
+            <!-- Аватар -->
+            <Grid HorizontalOptions="Center" Margin="0,20">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAvatarClicked"/>
+                </Grid.GestureRecognizers>
+                
+                <Frame WidthRequest="100" 
+                       HeightRequest="100"
+                       CornerRadius="50"
+                       BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Label x:Name="AvatarLabel"
+                           Text="👤"
+                           FontSize="60"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+                
+                <!-- Кнопка камеры -->
+                <Frame WidthRequest="30"
+                       HeightRequest="30"
+                       CornerRadius="15"
+                       BackgroundColor="#2A6B9F"
+                       HorizontalOptions="End"
+                       VerticalOptions="End"
+                       Margin="0,0,5,5">
+                    <Label Text="📷"
+                           FontSize="16"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
+            </Grid>
+            
+            <Label Text="Нажмите на аватар, чтобы изменить"
+                   FontSize="12"
+                   TextColor="Gray"
+                   HorizontalOptions="Center"/>
+            
+            <!-- Имя пользователя -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Имя пользователя"
+                       FontSize="14"
+                       TextColor="Gray"/>
+                <Entry x:Name="UsernameEntry"
+                       Placeholder="Введите имя пользователя"
+                       BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+            </VerticalStackLayout>
+            
+            <!-- Номер телефона (только для просмотра) -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Номер телефона"
+                       FontSize="14"
+                       TextColor="Gray"/>
+                <Entry x:Name="PhoneEntry"
+                       Placeholder="Номер телефона"
+                       IsEnabled="False"
+                       BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                       TextColor="{AppThemeBinding Light=Gray, Dark=#888888}"/>
+            </VerticalStackLayout>
+            
+            <!-- О себе -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="О себе"
+                       FontSize="14"
+                       TextColor="Gray"/>
+                <Editor x:Name="BioEntry"
+                        Placeholder="Расскажите о себе..."
+                        HeightRequest="80"
+                        BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
+                        TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+            </VerticalStackLayout>
+            
+            <!-- Кнопки -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Button Text="Отмена"
+                        Clicked="OnCancelClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="#2A6B9F"/>
+                <Button Text="Сохранить"
+                        Clicked="OnSaveClicked"
+                        BackgroundColor="#2A6B9F"
+                        TextColor="White"/>
+            </Grid>
+            
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

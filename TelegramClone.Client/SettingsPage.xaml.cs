@@ -115,9 +115,35 @@ public partial class SettingsPage : ContentPage
     }
     
     private async void OnAccountClicked(object sender, EventArgs e)
+{
+    // Получаем текущего пользователя
+    try
     {
-        await DisplayAlert("Аккаунт", "Редактирование профиля будет доступно в следующей версии", "OK");
+        var response = await _httpClient.GetAsync($"{_serverUrl}/api/users/me");
+        
+        if (response.IsSuccessStatusCode)
+        {
+            var json = await response.Content.ReadAsStringAsync();
+            var user = JsonSerializer.Deserialize<User>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+            
+            if (user != null)
+            {
+                var editProfilePage = new EditProfilePage(user, _token, _serverUrl);
+                await Navigation.PushAsync(editProfilePage);
+                return;
+            }
+        }
+        
+        await DisplayAlert("Ошибка", "Не удалось загрузить данные пользователя", "OK");
     }
+    catch (Exception ex)
+    {
+        await DisplayAlert("Ошибка", ex.Message, "OK");
+    }
+}
     
     private async void OnChatSettingsClicked(object sender, EventArgs e)
     {

@@ -1,16 +1,20 @@
 {
   "Packages": [
     {
-      "FamilyName": "WindowsWorkload.PSOnnxRuntime.2.7_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "FamilyName": "WindowsWorkload.PSOnnxRuntime.3.5_8wekyb3d8bbwe",
+      "Version": "1.2507.793.0"
     },
     {
-      "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.2.7_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.3.5_8wekyb3d8bbwe",
+      "Version": "1.2507.793.0"
     },
     {
-      "FamilyName": "WindowsWorkload.PSTokenizer.365.2.7_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "FamilyName": "WindowsWorkload.PSTokenizerShared.365.3.5_8wekyb3d8bbwe",
+      "Version": "1.2507.793.0"
+    },
+    {
+      "FamilyName": "WindowsWorkload.PSTokenizerShared.Data.3.5_8wekyb3d8bbwe",
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageContentModeration.1_8wekyb3d8bbwe",
@@ -22,55 +26,59 @@
     },
     {
       "FamilyName": "WindowsWorkload.ImageObjectRemover.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageObjectRemover.Data.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ScrRegDetection.365.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ScrRegDetection.Data.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.TextRecognition.365.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageSearch.365.3_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageSearch.Data.3_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.7.817.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageTextSearch.365.3_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.ImageTextSearch.Data.3_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.7.817.0"
     },
     {
       "FamilyName": "WindowsWorkload.Manager.1_8wekyb3d8bbwe",
-      "Version": "1.7.804.0"
+      "Version": "1.2506.707.0"
+    },
+    {
+      "FamilyName": "WindowsWorkload.SessionManager.1_8wekyb3d8bbwe",
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.Data.ContentExtraction.365.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.Data.ImageTransform.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     },
     {
       "FamilyName": "WindowsWorkload.Data.ImageSearch.365.1_8wekyb3d8bbwe",
-      "Version": "1.2505.830.0"
+      "Version": "1.2507.793.0"
     }
   ],
   "Workloads": [
@@ -85,13 +93,16 @@
           "FamilyName": "WindowsWorkload.Manager.1_8wekyb3d8bbwe"
         },
         {
-          "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.2.7_8wekyb3d8bbwe"
+          "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.3.5_8wekyb3d8bbwe"
         },
         {
           "FamilyName": "WindowsWorkload.ScrRegDetection.365.1_8wekyb3d8bbwe"
         },
         {
           "FamilyName": "WindowsWorkload.ScrRegDetection.Data.1_8wekyb3d8bbwe"
+        },
+        {
+          "FamilyName": "WindowsWorkload.SessionManager.1_8wekyb3d8bbwe"
         },
         {
           "FamilyName": "WindowsWorkload.TextRecognition.365.1_8wekyb3d8bbwe"
@@ -127,10 +138,16 @@
           "FamilyName": "WindowsWorkload.Manager.1_8wekyb3d8bbwe"
         },
         {
-          "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.2.7_8wekyb3d8bbwe"
+          "FamilyName": "WindowsWorkload.PSOnnxRuntime.365.3.5_8wekyb3d8bbwe"
         },
         {
-          "FamilyName": "WindowsWorkload.PSTokenizer.365.2.7_8wekyb3d8bbwe"
+          "FamilyName": "WindowsWorkload.PSTokenizerShared.365.3.5_8wekyb3d8bbwe"
+        },
+        {
+          "FamilyName": "WindowsWorkload.PSTokenizerShared.Data.3.5_8wekyb3d8bbwe"
+        },
+        {
+          "FamilyName": "WindowsWorkload.SessionManager.1_8wekyb3d8bbwe"
         }
       ]
     },
@@ -151,7 +168,10 @@
           "FamilyName": "WindowsWorkload.Manager.1_8wekyb3d8bbwe"
         },
         {
-          "FamilyName": "WindowsWorkload.PSOnnxRuntime.2.7_8wekyb3d8bbwe"
+          "FamilyName": "WindowsWorkload.PSOnnxRuntime.3.5_8wekyb3d8bbwe"
+        },
+        {
+          "FamilyName": "WindowsWorkload.SessionManager.1_8wekyb3d8bbwe"
         }
       ]
     }

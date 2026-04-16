@@ -29,6 +29,7 @@ public partial class ChatPage : ContentPage
         _serverUrl = serverUrl;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_token}");
+        _httpClient.Timeout = TimeSpan.FromSeconds(30);
         
         Title = "";
         BindingContext = this;
@@ -88,7 +89,7 @@ public partial class ChatPage : ContentPage
         _refreshTimer = new Timer(async _ =>
         {
             await CheckForNewMessages();
-        }, null, 2000, 2000); // Каждые 2 секунды
+        }, null, 3000, 3000);
     }
     
     private async Task CheckForNewMessages()
@@ -96,6 +97,13 @@ public partial class ChatPage : ContentPage
         try
         {
             var response = await _httpClient.GetAsync($"{_serverUrl}/api/chats/{_chat.Id}/messages");
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.BadGateway ||
+                response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+            {
+                return;
+            }
+            
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
@@ -121,56 +129,83 @@ public partial class ChatPage : ContentPage
     
     private async Task LoadMessagesAsync()
     {
-        try
+        int maxRetries = 3;
+        int retryCount = 0;
+        
+        while (retryCount < maxRetries)
         {
-            var response = await _httpClient.GetAsync($"{_serverUrl}/api/chats/{_chat.Id}/messages");
-            var responseText = await response.Content.ReadAsStringAsync();
-            
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var messages = JsonSerializer.Deserialize<List<Message>>(responseText, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var response = await _httpClient.GetAsync($"{_serverUrl}/api/chats/{_chat.Id}/messages");
+                var responseText = await response.Content.ReadAsStringAsync();
                 
-                if (messages != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    var viewModels = new List<MessageViewModel>();
-                    foreach (var msg in messages)
+                    var messages = JsonSerializer.Deserialize<List<Message>>(responseText, new JsonSerializerOptions
                     {
-                        msg.Timestamp = msg.Timestamp.ToLocalTime();
-                        viewModels.Add(new MessageViewModel
+                        PropertyNameCaseInsensitive = true
+                    });
+                    
+                    if (messages != null)
+                    {
+                        var viewModels = new List<MessageViewModel>();
+                        foreach (var msg in messages)
                         {
-                            Id = msg.Id,
-                            Text = msg.Text,
-                            Timestamp = msg.Timestamp,
-                            IsMine = msg.SenderId == _currentUserId,
-                            IsEdited = msg.IsEdited
-                        });
+                            msg.Timestamp = msg.Timestamp.ToLocalTime();
+                            viewModels.Add(new MessageViewModel
+                            {
+                                Id = msg.Id,
+                                Text = msg.Text,
+                                Timestamp = msg.Timestamp,
+                                IsMine = msg.SenderId == _currentUserId,
+                                IsEdited = msg.IsEdited
+                            });
+                        }
+                        Messages = viewModels;
                     }
-                    Messages = viewModels;
+                    else
+                    {
+                        Messages = new List<MessageViewModel>();
+                    }
+                    
+                    if (Messages.Any())
+                    {
+                        await Task.Delay(100);
+                        MessagesCollection.ScrollTo(Messages.Last(), position: ScrollToPosition.End, animate: false);
+                    }
+                    
+                    await MarkMessagesAsReadAsync();
+                    return;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway || 
+                         response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    retryCount++;
+                    if (retryCount < maxRetries)
+                    {
+                        await Task.Delay(2000 * retryCount);
+                        continue;
+                    }
+                    await DisplayAlert("Ошибка", "Сервер временно недоступен. Попробуйте позже.", "OK");
+                    return;
                 }
                 else
                 {
-                    Messages = new List<MessageViewModel>();
+                    await DisplayAlert("Ошибка", $"Не удалось загрузить сообщения: {responseText}", "OK");
+                    return;
                 }
-                
-                if (Messages.Any())
-                {
-                    await Task.Delay(100);
-MessagesCollection.ScrollTo(Messages.Last(), position: ScrollToPosition.End, animate: false);
-                }
-                
-                await MarkMessagesAsReadAsync();
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlert("Ошибка", $"Не удалось загрузить сообщения: {responseText}", "OK");
+                retryCount++;
+                if (retryCount < maxRetries)
+                {
+                    await Task.Delay(2000 * retryCount);
+                    continue;
+                }
+                await DisplayAlert("Ошибка", $"Не удалось загрузить сообщения: {ex.Message}", "OK");
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Ошибка", $"Не удалось загрузить сообщения: {ex.Message}", "OK");
         }
     }
     
@@ -275,51 +310,79 @@ MessagesCollection.ScrollTo(Messages.Last(), position: ScrollToPosition.End, ani
         var json = JsonSerializer.Serialize(messageData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         
-        try
+        int maxRetries = 3;
+        int retryCount = 0;
+        
+        while (retryCount < maxRetries)
         {
-            var response = await _httpClient.PostAsync($"{_serverUrl}/api/messages", content);
-            var responseText = await response.Content.ReadAsStringAsync();
-            
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var newMessage = JsonSerializer.Deserialize<Message>(responseText, new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var response = await _httpClient.PostAsync($"{_serverUrl}/api/messages", content);
+                var responseText = await response.Content.ReadAsStringAsync();
                 
-                if (newMessage != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    newMessage.Timestamp = newMessage.Timestamp.ToLocalTime();
-                    
-                    var newViewModel = new MessageViewModel
+                    var newMessage = JsonSerializer.Deserialize<Message>(responseText, new JsonSerializerOptions
                     {
-                        Id = newMessage.Id,
-                        Text = newMessage.Text,
-                        Timestamp = newMessage.Timestamp,
-                        IsMine = true,
-                        IsEdited = false
-                    };
+                        PropertyNameCaseInsensitive = true
+                    });
                     
-                    var updatedMessages = new List<MessageViewModel>(Messages);
-                    updatedMessages.Add(newViewModel);
-                    Messages = updatedMessages;
-                    
-                    await Task.Delay(100);
-MessagesCollection.ScrollTo(newViewModel, position: ScrollToPosition.End, animate: true);
-                    
-                    WeakReferenceMessenger.Default.Send(new RefreshChatsMessage());
+                    if (newMessage != null)
+                    {
+                        newMessage.Timestamp = newMessage.Timestamp.ToLocalTime();
+                        
+                        var newViewModel = new MessageViewModel
+                        {
+                            Id = newMessage.Id,
+                            Text = newMessage.Text,
+                            Timestamp = newMessage.Timestamp,
+                            IsMine = true,
+                            IsEdited = false
+                        };
+                        
+                        var updatedMessages = new List<MessageViewModel>(Messages);
+                        updatedMessages.Add(newViewModel);
+                        Messages = updatedMessages;
+                        
+                        await Task.Delay(100);
+                        MessagesCollection.ScrollTo(newViewModel, position: ScrollToPosition.End, animate: true);
+                        
+                        WeakReferenceMessenger.Default.Send(new RefreshChatsMessage());
+                    }
+                    return;
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway || 
+                         response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+                {
+                    retryCount++;
+                    if (retryCount < maxRetries)
+                    {
+                        await Task.Delay(2000 * retryCount);
+                        continue;
+                    }
+                    await DisplayAlert("Ошибка", "Сервер временно недоступен, попробуйте позже", "OK");
+                    MessageEntry.Text = text;
+                    return;
+                }
+                else
+                {
+                    await DisplayAlert("Ошибка", $"Не удалось отправить сообщение\n{response.StatusCode}\n{responseText}", "OK");
+                    MessageEntry.Text = text;
+                    return;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlert("Ошибка", $"Не удалось отправить сообщение\n{response.StatusCode}\n{responseText}", "OK");
+                retryCount++;
+                if (retryCount < maxRetries)
+                {
+                    await Task.Delay(2000 * retryCount);
+                    continue;
+                }
+                await DisplayAlert("Ошибка", $"{ex.Message}", "OK");
                 MessageEntry.Text = text;
+                return;
             }
-        }
-        catch (Exception ex)
-        {
-            await DisplayAlert("Ошибка", $"{ex.Message}", "OK");
-            MessageEntry.Text = text;
         }
     }
     
