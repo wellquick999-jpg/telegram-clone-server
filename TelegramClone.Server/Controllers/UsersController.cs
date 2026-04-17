@@ -25,6 +25,7 @@ public class UsersController : ControllerBase
         return Guid.Parse(userIdClaim.Value);
     }
     
+    // GET: api/users/search?query=...
     [HttpGet("search")]
     public async Task<IActionResult> SearchUsers([FromQuery] string query)
     {
@@ -35,14 +36,23 @@ public class UsersController : ControllerBase
             if (string.IsNullOrWhiteSpace(query))
                 return Ok(new List<object>());
             
+            // Если поиск начинается с @, убираем @ для поиска в базе
+            if (query.StartsWith("@"))
+            {
+                query = query.Substring(1);
+            }
+            
             var users = await _context.Users
                 .Where(u => u.Id != currentUserId &&
-                           (u.Username.Contains(query) || u.PhoneNumber.Contains(query)))
+                           (u.PhoneNumber.Contains(query) || 
+                            u.UserTag.Contains(query) ||
+                            u.Username.Contains(query)))
                 .Take(20)
                 .Select(u => new
                 {
                     u.Id,
                     u.Username,
+                    u.UserTag,
                     u.PhoneNumber,
                     u.AvatarUrl,
                     u.Bio,
@@ -59,6 +69,7 @@ public class UsersController : ControllerBase
         }
     }
     
+    // GET: api/users/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetUserById(Guid id)
     {
@@ -70,6 +81,7 @@ public class UsersController : ControllerBase
             {
                 u.Id,
                 u.Username,
+                u.UserTag,
                 u.PhoneNumber,
                 u.AvatarUrl,
                 u.Bio,
@@ -85,6 +97,7 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
     
+    // GET: api/users/me
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser()
     {
@@ -98,6 +111,7 @@ public class UsersController : ControllerBase
                 {
                     u.Id,
                     u.Username,
+                    u.UserTag,
                     u.PhoneNumber,
                     u.AvatarUrl,
                     u.Bio,
@@ -118,6 +132,7 @@ public class UsersController : ControllerBase
         }
     }
     
+    // GET: api/users/status/{userId}
     [HttpGet("status/{userId}")]
     public async Task<IActionResult> GetUserStatus(Guid userId)
     {
@@ -138,6 +153,7 @@ public class UsersController : ControllerBase
         });
     }
     
+    // PUT: api/users/profile
     [HttpPut("profile")]
     public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
     {
@@ -147,15 +163,23 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound("Пользователь не найден");
         
-        if (!string.IsNullOrWhiteSpace(request.Username))
+        // Обновляем отображаемое имя (Username)
+        if (!string.IsNullOrWhiteSpace(request.DisplayName))
         {
+            user.Username = request.DisplayName;
+        }
+        
+        // Обновляем уникальный юзернейм (UserTag)
+        if (!string.IsNullOrWhiteSpace(request.UserTag))
+        {
+            // Проверяем уникальность UserTag
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == request.Username && u.Id != currentUserId);
+                .FirstOrDefaultAsync(u => u.UserTag == request.UserTag && u.Id != currentUserId);
             
             if (existingUser != null)
                 return BadRequest("Это имя пользователя уже занято");
             
-            user.Username = request.Username;
+            user.UserTag = request.UserTag;
         }
         
         if (request.Bio != null)
@@ -172,6 +196,7 @@ public class UsersController : ControllerBase
         {
             user.Id,
             user.Username,
+            user.UserTag,
             user.Bio,
             user.AvatarUrl,
             user.IsOnline,
@@ -198,7 +223,8 @@ public class UsersController : ControllerBase
 
 public class UpdateProfileRequest
 {
-    public string? Username { get; set; }
+    public string? DisplayName { get; set; }
+    public string? UserTag { get; set; }
     public string? Bio { get; set; }
     public string? AvatarUrl { get; set; }
 }

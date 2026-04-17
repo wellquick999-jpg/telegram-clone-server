@@ -1,4 +1,4 @@
-<api type="debug" assembly-name="TelegramClone.Client" mvid="275dadb645d14a42b86d91ab9972911f">
+<api type="debug" assembly-name="TelegramClone.Client" mvid="6023c45329534c818743f50a6311e60f">
   <java-to-managed>
     <entry java-name="crc64630b5e60837dcca9/MainActivity" managed-name="TelegramClone.Client.MainActivity, TelegramClone.Client" managed-type-token-id="33554456" />
     <entry java-name="crc64630b5e60837dcca9/MainApplication" managed-name="TelegramClone.Client.MainApplication, TelegramClone.Client" managed-type-token-id="33554457" />

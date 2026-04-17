@@ -116,7 +116,6 @@ public partial class SettingsPage : ContentPage
     
     private async void OnAccountClicked(object sender, EventArgs e)
 {
-    // Получаем текущего пользователя
     try
     {
         var response = await _httpClient.GetAsync($"{_serverUrl}/api/users/me");

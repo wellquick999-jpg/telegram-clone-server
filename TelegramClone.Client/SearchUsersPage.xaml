@@ -7,16 +7,14 @@
     
     <VerticalStackLayout Spacing="10" Padding="10">
         
-        <!-- Поисковая строка -->
         <Entry x:Name="SearchEntry"
-               Placeholder="Введите номер телефона или имя"
+               Placeholder="Введите номер телефона или @username"
                ReturnType="Search"
                Completed="OnSearchCompleted"
                BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
                TextColor="{AppThemeBinding Light=Black, Dark=White}"
                PlaceholderColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
         
-        <!-- Результаты поиска -->
         <CollectionView x:Name="UsersCollection"
                         SelectionMode="Single"
                         SelectionChanged="OnUserSelected"
@@ -27,35 +25,26 @@
                           ColumnDefinitions="Auto,*,Auto"
                           BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}">
                         
-                        <!-- Аватар -->
                         <Frame Grid.Column="0" 
                                WidthRequest="50" 
                                HeightRequest="50"
                                CornerRadius="25"
-                               BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
-                               HorizontalOptions="Center"
-                               VerticalOptions="Center">
+                               BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}">
                             <Label Text="{Binding Username[0]}" 
                                    FontSize="24"
-                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center"/>
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                         </Frame>
                         
-                        <!-- Информация о пользователе -->
-                        <VerticalStackLayout Grid.Column="1" 
-                                             Spacing="5"
-                                             Margin="10,0">
+                        <VerticalStackLayout Grid.Column="1" Spacing="3" Margin="10,0">
                             <Label Text="{Binding Username}" 
                                    FontSize="16"
                                    FontAttributes="Bold"
                                    TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
-                            <Label Text="{Binding PhoneNumber}" 
+                            <Label Text="@{Binding UserTag}" 
                                    FontSize="12"
-                                   TextColor="{AppThemeBinding Light=Gray, Dark=#8a8a8a}"/>
+                                   TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
                         </VerticalStackLayout>
                         
-                        <!-- Кнопка выбора -->
                         <Label Grid.Column="2" 
                                Text="Выбрать"
                                TextColor="#2A6B9F"

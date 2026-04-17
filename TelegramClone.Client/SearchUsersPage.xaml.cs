@@ -27,7 +27,7 @@ public partial class SearchUsersPage : ContentPage
     {
         if (_isSearching) return;
         
-        var query = SearchEntry.Text;
+        var query = SearchEntry.Text?.Trim();
         if (string.IsNullOrWhiteSpace(query))
             return;
         
@@ -37,6 +37,12 @@ public partial class SearchUsersPage : ContentPage
         
         try
         {
+            // Если поиск начинается с @, убираем его для поиска в базе
+            if (query.StartsWith("@"))
+            {
+                query = query.Substring(1);
+            }
+            
             var response = await _httpClient.GetAsync($"{_serverUrl}/api/users/search?query={Uri.EscapeDataString(query)}");
             var responseText = await response.Content.ReadAsStringAsync();
             

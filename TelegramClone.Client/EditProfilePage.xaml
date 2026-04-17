@@ -8,63 +8,89 @@
     <ScrollView>
         <VerticalStackLayout Spacing="20" Padding="20">
             
-            <!-- Аватар -->
-            <Grid HorizontalOptions="Center" Margin="0,20">
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnAvatarClicked"/>
-                </Grid.GestureRecognizers>
+            <!-- Аватар слева, имя и фамилия справа (неактивные) -->
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="15" Margin="0,20">
                 
-                <Frame WidthRequest="100" 
-                       HeightRequest="100"
-                       CornerRadius="50"
-                       BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}"
-                       HorizontalOptions="Center"
-                       VerticalOptions="Center">
-                    <Label x:Name="AvatarLabel"
-                           Text="👤"
-                           FontSize="60"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                </Frame>
+                <!-- Аватар -->
+                <Grid Grid.Column="0">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarClicked"/>
+                    </Grid.GestureRecognizers>
+                    <Frame WidthRequest="80" 
+                           HeightRequest="80"
+                           CornerRadius="40"
+                           BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#2a2a2a}">
+                        <Label x:Name="AvatarLabel"
+                               Text="👤"
+                               FontSize="45"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Frame>
+                    <Frame WidthRequest="28"
+                           HeightRequest="28"
+                           CornerRadius="14"
+                           BackgroundColor="#2A6B9F"
+                           HorizontalOptions="End"
+                           VerticalOptions="End"
+                           Margin="0,0,5,5">
+                        <Label Text="📷" FontSize="14" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Frame>
+                </Grid>
                 
-                <!-- Кнопка камеры -->
-                <Frame WidthRequest="30"
-                       HeightRequest="30"
-                       CornerRadius="15"
-                       BackgroundColor="#2A6B9F"
-                       HorizontalOptions="End"
-                       VerticalOptions="End"
-                       Margin="0,0,5,5">
-                    <Label Text="📷"
-                           FontSize="16"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center"/>
-                </Frame>
+                <!-- Имя и фамилия (неактивные, только для отображения) -->
+                <VerticalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                    <Label x:Name="DisplayFirstNameLabel"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                    <Label x:Name="DisplayLastNameLabel"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                </VerticalStackLayout>
             </Grid>
             
-            <Label Text="Нажмите на аватар, чтобы изменить"
-                   FontSize="12"
-                   TextColor="Gray"
-                   HorizontalOptions="Center"/>
-            
-            <!-- Имя пользователя -->
+            <!-- Ваше имя (редактируемые поля) -->
             <VerticalStackLayout Spacing="5">
-                <Label Text="Имя пользователя"
-                       FontSize="14"
-                       TextColor="Gray"/>
-                <Entry x:Name="UsernameEntry"
-                       Placeholder="Введите имя пользователя"
-                       BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
-                       TextColor="{AppThemeBinding Light=Black, Dark=White}"/>
+                <Label Text="Ваше имя" FontSize="14" TextColor="Gray"/>
+                <Frame Padding="0"
+                       BackgroundColor="{AppThemeBinding Light=White, Dark=#1a1a1a}"
+                       BorderColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
+                       HasShadow="False">
+                    <VerticalStackLayout Spacing="0">
+                        <Entry x:Name="FirstNameEntry"
+                               Placeholder="Имя"
+                               BackgroundColor="Transparent"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                               Margin="10,8"/>
+                        <BoxView HeightRequest="1" 
+                                 BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"/>
+                        <Entry x:Name="LastNameEntry"
+                               Placeholder="Фамилия"
+                               BackgroundColor="Transparent"
+                               TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                               Margin="10,8"/>
+                    </VerticalStackLayout>
+                </Frame>
             </VerticalStackLayout>
             
-            <!-- Номер телефона (только для просмотра) -->
+            <!-- Имя пользователя (UserTag) -->
             <VerticalStackLayout Spacing="5">
-                <Label Text="Номер телефона"
-                       FontSize="14"
+                <Label Text="Имя пользователя" FontSize="14" TextColor="Gray"/>
+                <Entry x:Name="UserTagEntry"
+                       Placeholder="@username"
+                       BackgroundColor="{AppThemeBinding Light=#F0F0F0, Dark=#2a2a2a}"
+                       TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                       FontSize="16"/>
+                <Label Text="Вы можете использовать a-z, 0-9 и символы подчёркивания."
+                       FontSize="10"
                        TextColor="Gray"/>
+            </VerticalStackLayout>
+            
+            <!-- Номер телефона -->
+            <VerticalStackLayout Spacing="5">
+                <Label Text="Номер телефона" FontSize="14" TextColor="Gray"/>
                 <Entry x:Name="PhoneEntry"
-                       Placeholder="Номер телефона"
                        IsEnabled="False"
                        BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#333333}"
                        TextColor="{AppThemeBinding Light=Gray, Dark=#888888}"/>
@@ -72,9 +98,7 @@
             
             <!-- О себе -->
             <VerticalStackLayout Spacing="5">
-                <Label Text="О себе"
-                       FontSize="14"
-                       TextColor="Gray"/>
+                <Label Text="О себе" FontSize="14" TextColor="Gray"/>
                 <Editor x:Name="BioEntry"
                         Placeholder="Расскажите о себе..."
                         HeightRequest="80"

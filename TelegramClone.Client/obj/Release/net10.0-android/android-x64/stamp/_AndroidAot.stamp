@@ -56,7 +56,6 @@ obj\Release\net10.0-android\android-x64\aot\System.ComponentModel.TypeConverter.
 obj\Release\net10.0-android\android-x64\aot\System.ComponentModel.dll.so
 obj\Release\net10.0-android\android-x64\aot\System.Console.dll.so
 obj\Release\net10.0-android\android-x64\aot\System.Diagnostics.DiagnosticSource.dll.so
-obj\Release\net10.0-android\android-x64\aot\System.Diagnostics.TraceSource.dll.so
 obj\Release\net10.0-android\android-x64\aot\System.Drawing.Primitives.dll.so
 obj\Release\net10.0-android\android-x64\aot\System.Drawing.dll.so
 obj\Release\net10.0-android\android-x64\aot\System.Formats.Asn1.dll.so
